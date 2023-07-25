@@ -24,5 +24,3 @@ app.listen( process.env.PORT, () => {
             console.log('servidor de node escuchando en el puerto ' + 3000 );
 });
  
-// cadena de conexion de mongoAtlas
-// mongodb+srv://JuanCarlos:turdape2016@agapeacluster.skhmidd.mongodb.net/mibasedatos
