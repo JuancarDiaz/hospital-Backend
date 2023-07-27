@@ -7,14 +7,39 @@ const { generarJWT } = require('../helpers/jwt');
 
 // OBTENER TODOS LOS USUARIOS:
  const getUsuarios = async (req, res, next)=>{
+     
+    const desde = Number( req.query.desde ) || 0;
 
-    const usuarios = await Usuario.find( {},'nombre google email google');
 
+    /**
+     * OPTIMIZACION PARA USO AWAIT (la promesa asincrona hasta quen no se resuelve no pasa a la siguiente linea)
+     * Y POR CONSECUENCIA PUEDE DEMORAR MUCHO TIEMPO EN PROCESAR AMBAS PETICIONES Y REGRESAR LA RESPUESTA
+     */
+    // const usuarios = await Usuario.find( {},'nombre google email google')   // busca todos los Usuarios y extrae solo esos campos
+    //                               .skip( desde )                            // donde empieza a obtener datos
+    //                               .limit( 5 )                               // hasta donde (limite 5 registros)
+
+    // // contar total de registros de esa colleccion:
+    // const total = await Usuario.count();
+
+
+    const [usuarios, total] = await Promise.all([
+      
+        Usuario.find( {},'nombre google email google img')   
+                                      .skip( desde )                            
+                                      .limit( 5 )
+        ,
+        
+        Usuario.countDocuments()
+        
+        ,
+
+    ]);
 
     res.status(200).json({
         ok:true,
         usuarios,
-        uid: req.uid
+        total
     })
 }
 
