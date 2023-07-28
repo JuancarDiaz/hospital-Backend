@@ -1,5 +1,6 @@
 const { Response } = require('express');
 const Hospital = require('../models/hospital');
+const { hashSync } = require('bcryptjs');
 
 // OBTENER TODOS LOS HOSPITALES
 const getHospitales =  async ( req, res = Response, next )=>{
@@ -68,11 +69,35 @@ const actualizarHospital = async ( req, res = Response, next )=>{
 
     try{
 
+        const { id }  = req.params;
+        const { uid } = req;
+
+        const hospital = await Hospital.findById( {_id: id} );
+
+        if( !hospital ){
+
+            return   res.status( 200 ).json({
+
+                        ok: false,
+                        msg: 'NO EXISTIA DICHO HOSPITAL'
+                    });
+        }
+
+        // hospital.nombre = req.body.nombre;
+
+        const cambiosHospitales = {
+            ...req.body,
+            usuario: uid
+        }
+
+        const hospitalActualizado = await Hospital.findByIdAndUpdate( id, cambiosHospitales, { new: true });
+
         
         res.status( 200 ).json({
 
             ok: true,
-            msg: 'actualizar Hospital correcto'
+            msg: 'actualizar Hospital correcto',
+            hospitalActualizado
         });
 
     }catch(err){
@@ -93,7 +118,26 @@ const borrarHospital = async ( req, res = Response, next )=>{
 
     try{
 
+        const { id }  = req.params;
         
+        const hospital = await Hospital.findById( {_id: id} );
+
+        if( !hospital ){
+
+            return   res.status( 200 ).json({
+
+                        ok: false,
+                        msg: 'NO EXISTIA DICHO HOSPITAL'
+                    });
+        }
+
+        // hospital.nombre = req.body.nombre;
+
+
+        const hospitalActualizado = await Hospital.findByIdAndDelete( id );
+
+      
+
         res.status( 200 ).json({
 
             ok: true,
@@ -111,6 +155,8 @@ const borrarHospital = async ( req, res = Response, next )=>{
         });
     }
 } 
+
+
 
 
 module.exports = { getHospitales, crearHospital, borrarHospital, actualizarHospital }

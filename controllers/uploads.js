@@ -122,7 +122,7 @@ const retornaImagen = ( req, res = Response, next ) =>{
     
        rutaRelativaImg = path.resolve(__dirname, ruta);
 
-       res.sendFile( rutaRelativaImg );
+       res.sendFile( rutaRelativaImg );git 
     }
 
     

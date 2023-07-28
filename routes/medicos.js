@@ -21,9 +21,15 @@ router.post( '/',
     ] ,
      crearMedico );
 
-router.put( '/:id', [] , ActualizarMedico );
+router.put( '/:id',
+      [
+               validarJWT,
+               check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+               validarCampos
+      ] ,
+      ActualizarMedico );
 
-router.delete( '/:id', [] , borrarMedico );
+router.delete( '/:id' , borrarMedico );
 
 
 
